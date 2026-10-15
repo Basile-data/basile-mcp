@@ -3,7 +3,7 @@
   "server": {
     "name": "cc.basile/basile",
     "title": "Basile",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "url": "https://mcp.basile.cc/mcp",
     "websiteUrl": "https://www.basile.cc"
   },

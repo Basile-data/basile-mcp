@@ -3,7 +3,7 @@
   "name": "cc.basile/basile",
   "title": "Basile",
   "description": "MCP de base de données B2B française : entreprises, dirigeants, contacts (légal, LinkedIn, Maps).",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "websiteUrl": "https://www.basile.cc",
   "icons": [
     {

@@ -2,8 +2,9 @@
 
 Le serveur MCP de Basile est hébergé : chaque nouveauté arrive pour tous les utilisateurs, sans rien réinstaller. La version annoncée par le serveur et par le registre officiel MCP est indiquée entre crochets.
 
-## Non publié
+## 2026-10-15 [0.2.1]
 
+- Fiche du registre officiel MCP republiée : description sans chiffres, icône pour les thèmes sombres, sans lien vers un dépôt de code.
 - Dépôt public de documentation : README bilingue, `server.json` du registre officiel MCP, `glama.json`, exemples de configuration par client et validation automatique de `server.json`.
 - Liste des outils lisible par machine, `tools.json`, et sa page générée `docs/TOOLS.md` : titre, coût, paramètres et annotations de chacun des 11 outils, regroupés par famille.
 - README : logo clair et sombre, encart d'état du service, outils par famille, section garde-fous. Windsurf devient Devin Desktop (`~/.config/devin/mcp_config.json`, clé `url`).

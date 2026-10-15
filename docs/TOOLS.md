@@ -4,7 +4,7 @@
 
 **Français** · [English](#english)
 
-La version 0.2.0 du serveur MCP de Basile (`https://mcp.basile.cc/mcp`) expose **11 outils** en **4 familles**. Cette page est générée à partir de [`tools.json`](../tools.json), qui reprend le titre et les annotations de chaque outil tels que le serveur les déclare.
+La version 0.2.1 du serveur MCP de Basile (`https://mcp.basile.cc/mcp`) expose **11 outils** en **4 familles**. Cette page est générée à partir de [`tools.json`](../tools.json), qui reprend le titre et les annotations de chaque outil tels que le serveur les déclare.
 
 Retour au [README](../README.md).
 
@@ -217,7 +217,7 @@ Annotations : `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: t
 
 ## English
 
-Version 0.2.0 of the Basile MCP server exposes **11 tools** in **4 families**. Every tool declares a title and the `readOnlyHint`, `destructiveHint`, `idempotentHint` and `openWorldHint` annotations. **Read-only** tools only read the Basile database, though searches still use credits; tools that **consume** use the plan export quota or the enrichment balance, so your client may ask you to confirm. No tool is destructive. Full parameter descriptions are in the French section above and in [`tools.json`](../tools.json).
+Version 0.2.1 of the Basile MCP server exposes **11 tools** in **4 families**. Every tool declares a title and the `readOnlyHint`, `destructiveHint`, `idempotentHint` and `openWorldHint` annotations. **Read-only** tools only read the Basile database, though searches still use credits; tools that **consume** use the plan export quota or the enrichment balance, so your client may ask you to confirm. No tool is destructive. Full parameter descriptions are in the French section above and in [`tools.json`](../tools.json).
 
 | Family | Tool | What it does | Main parameters | Cost | Type |
 | --- | --- | --- | --- | --- | --- |
