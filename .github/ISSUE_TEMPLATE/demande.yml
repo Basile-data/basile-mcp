@@ -1,0 +1,21 @@
+name: Filtre ou fonction manquante (feature request)
+description: Un filtre, une donnée ou un outil vous manque dans le serveur MCP de Basile.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Basile évolue chaque semaine et vos demandes guident les prochains filtres.
+        Basile ships every week, and your requests shape the next filters.
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Votre besoin (what you need)
+      description: Ce que vous cherchez à obtenir, par exemple « les entreprises de plus de 5 M€ de chiffre d'affaires dans le Rhône ».
+    validations:
+      required: true
+  - type: textarea
+    id: usage
+    attributes:
+      label: Pour quoi faire ? (use case)
+      description: Prospection, enrichissement d'un fichier, étude de marché…

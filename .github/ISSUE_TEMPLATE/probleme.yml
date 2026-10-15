@@ -1,0 +1,58 @@
+name: Problème de connexion ou d'outil (bug report)
+description: Le serveur MCP de Basile ne se connecte pas, ou un outil ne répond pas comme prévu.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème.
+        **Ne collez jamais de jeton, de cookie, d'identifiant ni de donnée personnelle dans une issue : elle est publique.**
+        Pour une faille de sécurité, écrivez plutôt à contact@basile.cc (voir SECURITY.md).
+
+        Thanks for the report. Never paste tokens, cookies, credentials or personal data here: issues are public.
+  - type: dropdown
+    id: client
+    attributes:
+      label: Client MCP (MCP client)
+      options:
+        - Claude (claude.ai, Claude Desktop, mobile)
+        - Claude Code
+        - ChatGPT
+        - Cursor
+        - VS Code
+        - Windsurf (Devin Desktop)
+        - mcp-remote
+        - Autre (other)
+    validations:
+      required: true
+  - type: dropdown
+    id: etape
+    attributes:
+      label: Où ça bloque ? (where does it fail?)
+      options:
+        - Ajout du serveur (adding the server)
+        - Connexion OAuth (OAuth sign-in)
+        - Appel d'un outil (tool call)
+        - Export ou lien de téléchargement (export or download link)
+        - Enrichissement (enrichment)
+        - Autre (other)
+    validations:
+      required: true
+  - type: input
+    id: outil
+    attributes:
+      label: Outil concerné (tool)
+      placeholder: basile_search_companies
+  - type: textarea
+    id: description
+    attributes:
+      label: Ce qui se passe (what happens)
+      description: La demande faite à l'IA, ce que vous attendiez et ce que vous avez obtenu.
+    validations:
+      required: true
+  - type: textarea
+    id: erreur
+    attributes:
+      label: Message d'erreur (error message)
+      description: Le message affiché par votre client, sans jeton ni donnée personnelle.
+      render: text

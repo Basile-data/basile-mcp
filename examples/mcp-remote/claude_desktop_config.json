@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "basile": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.basile.cc/mcp"]
+    }
+  }
+}

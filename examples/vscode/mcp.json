@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "basile": {
+      "type": "http",
+      "url": "https://mcp.basile.cc/mcp"
+    }
+  }
+}
