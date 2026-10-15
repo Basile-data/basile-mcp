@@ -5,6 +5,10 @@ Le serveur MCP de Basile est hébergé : chaque nouveauté arrive pour tous les 
 ## Non publié
 
 - Dépôt public de documentation : README bilingue, `server.json` du registre officiel MCP, `glama.json`, exemples de configuration par client et validation automatique de `server.json`.
+- Liste des outils lisible par machine, `tools.json`, et sa page générée `docs/TOOLS.md` : titre, coût, paramètres et annotations de chacun des 11 outils, regroupés par famille.
+- README : logo clair et sombre, encart d'état du service, outils par famille, section garde-fous. Windsurf devient Devin Desktop (`~/.config/devin/mcp_config.json`, clé `url`).
+- `server.json` : icône pour les thèmes sombres, et plus de champ `repository`, réservé au dépôt du code source.
+- Validation en JavaScript : `server.json` et `glama.json` contre leurs schémas officiels, icônes, et `docs/TOOLS.md` à jour.
 
 ## 2026-10-11 [0.2.0]
 

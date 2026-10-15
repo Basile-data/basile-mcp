@@ -1,0 +1,19 @@
+{
+  "name": "basile-mcp-docs",
+  "private": true,
+  "description": "Validation des fichiers publics du dépôt basile-mcp : server.json, glama.json, tools.json et docs/TOOLS.md.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate-server-json.mjs",
+    "tools": "node scripts/generate-tools-md.mjs",
+    "check": "node scripts/validate-server-json.mjs && node scripts/generate-tools-md.mjs --check"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}
