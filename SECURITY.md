@@ -9,7 +9,7 @@ Merci de ne pas ouvrir d'issue publique pour une vulnérabilité, et de ne jamai
 ## Périmètre
 
 - le serveur MCP hébergé, `https://mcp.basile.cc/mcp`, et son parcours de connexion OAuth ;
-- les fichiers de ce dépôt : documentation, `server.json`, `glama.json` et exemples de configuration.
+- les fichiers de ce dépôt : documentation, `server.json`, `glama.json`, `tools.json` et exemples de configuration.
 
 Le serveur est hébergé et mis à jour en continu : seule la version en ligne est prise en charge.
 

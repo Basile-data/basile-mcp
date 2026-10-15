@@ -1,12 +1,20 @@
 <p align="center">
-  <a href="https://www.basile.cc"><img src="assets/basile-wordmark.png" alt="Basile, la base de données B2B française" width="300"></a>
+  <a href="https://www.basile.cc">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/basile-wordmark-white.png">
+      <img src="assets/basile-wordmark.png" alt="Basile, la base de données B2B française" width="300">
+    </picture>
+  </a>
 </p>
 
 # Basile MCP : la base de données B2B française dans Claude, ChatGPT et Cursor
 
 **Basile MCP est le serveur MCP de base de données B2B française** : il connecte Claude, ChatGPT, Cursor, VS Code et tout client compatible MCP à [Basile](https://www.basile.cc), pour trouver des entreprises françaises, leurs dirigeants et leurs contacts en une phrase. Vous demandez une liste en français, l'IA interroge Basile, compte, filtre et vous rend le fichier.
 
-**Français** · [English](#english)
+**Français** · [English](#english) · [Outils](docs/TOOLS.md) · [Exemples de configuration](examples/) · [Support](#support)
+
+> [!NOTE]
+> **Service en ligne.** Le serveur est hébergé par Basile et répond à `https://mcp.basile.cc/mcp` : rien à installer, rien à mettre à jour. Pour vérifier qu'il tourne, ouvrez [mcp.basile.cc/health](https://mcp.basile.cc/health), qui répond `"ok": true`. Avant la connexion, un `401` est normal : c'est lui qui lance le parcours OAuth.
 
 | | |
 |---|---|
@@ -14,18 +22,21 @@
 | Transport | Streamable HTTP (serveur distant, rien à installer) |
 | Connexion | OAuth avec votre compte Basile, sans clé d'API |
 | Facturation | comme une clé d'API : 1 crédit par fiche renvoyée, comptages gratuits |
-| Registre officiel MCP | `cc.basile/basile` |
+| Outils | recherche et comptage, fiches, export, enrichissement ([liste complète](docs/TOOLS.md)) |
+| Registre officiel MCP | `cc.basile/basile` ([`server.json`](server.json)) |
 | Site | [www.basile.cc](https://www.basile.cc) |
 
 ## Sommaire
 
 - [Ce que contient Basile](#ce-que-contient-basile)
 - [Exemples de demandes](#exemples-de-demandes)
-- [Connexion et facturation](#connexion-et-facturation)
-- [Installation par client](#installation-par-client)
+- [Authentification et facturation](#authentification-et-facturation)
+- [Démarrage rapide](#démarrage-rapide) : [Claude](#claude-claudeai-claude-desktop-applications-mobiles), [Claude Code](#claude-code), [ChatGPT](#chatgpt), [Cursor](#cursor), [VS Code](#vs-code-github-copilot), [Devin Desktop](#devin-desktop-anciennement-windsurf), [clients stdio](#clients-qui-ne-lancent-que-des-serveurs-locaux-mcp-remote)
 - [Outils du serveur MCP](#outils-du-serveur-mcp)
+- [Garde-fous](#garde-fous)
 - [Offres et limites](#offres-et-limites)
 - [Questions fréquentes](#questions-fréquentes)
+- [Support](#support)
 - [Licence](#licence)
 - [English](#english)
 
@@ -73,7 +84,7 @@ Tout est rapproché : une fiche Google Maps mène à la société du registre, �
 - « Pour ces 30 dirigeants, trouve leur e-mail et leur portable. Annonce-moi d'abord le coût maximal. »
 - « Quel est mon solde d'enrichissement ? »
 
-## Connexion et facturation
+## Authentification et facturation
 
 - **Adresse** : `https://mcp.basile.cc/mcp`, en Streamable HTTP.
 - **Connexion** : OAuth. Au premier appel, votre client ouvre la page de connexion Basile ; vous vous connectez avec votre compte habituel et vous autorisez l'accès. Aucune clé à copier, à coller ni à stocker : le client s'enregistre tout seul (enregistrement dynamique OAuth, PKCE).
@@ -81,9 +92,9 @@ Tout est rapproché : une fiche Google Maps mène à la société du registre, �
 - **Offre requise** : une offre avec accès API (offre API ou Agence, voir [Offres et limites](#offres-et-limites)). Sans elle, seul l'enrichissement payé sur le solde fonctionne.
 - **Facturation** : le serveur MCP est facturé comme une clé d'API. Chaque fiche renvoyée par une recherche consomme 1 crédit, et la consultation d'une fiche complète 1 crédit par appel. **Les comptages sont gratuits** et exacts : demandez toujours combien il y a de résultats avant d'extraire.
 - **Enrichissement** : payé sur le solde d'enrichissement, 0,05 € HT par e-mail trouvé, 0,50 € HT par numéro trouvé, rien si rien n'est trouvé. Une coordonnée déjà trouvée par votre compte est resservie gratuitement.
-- **État du service** : `https://mcp.basile.cc/health` répond publiquement quand le serveur tourne.
+- **Pour les développeurs de clients** : un appel sans jeton reçoit un `401` dont l'en-tête `WWW-Authenticate` désigne les métadonnées de ressource protégée (RFC 9728), `https://mcp.basile.cc/.well-known/oauth-protected-resource`. Le client s'enregistre ensuite par enregistrement dynamique (RFC 7591), en client public avec PKCE (S256). Portée : `basile:read`.
 
-## Installation par client
+## Démarrage rapide
 
 Le serveur est hébergé : il suffit de déclarer son adresse dans votre client, puis de vous connecter avec votre compte Basile. Des fichiers prêts à copier sont dans [examples/](examples/). Les libellés des menus cités ci-dessous peuvent varier selon la version et la langue de votre client.
 
@@ -116,11 +127,11 @@ Les serveurs MCP personnalisés passent par le **mode développeur** de ChatGPT,
 3. Connectez-vous avec votre compte Basile et autorisez l'accès.
 4. Dans une nouvelle conversation, choisissez Basile parmi les outils du mode développeur.
 
-ChatGPT demande une confirmation avant les outils qui consomment (export, enrichissement). Sur les offres Business et Enterprise, un administrateur doit parfois autoriser les applications personnalisées.
+ChatGPT demande une confirmation avant les outils qui consomment (export, enrichissement). Sur les offres Business et Enterprise, un administrateur doit parfois autoriser les applications personnalisées. Ces menus changent souvent : si vous ne les trouvez pas, cherchez « Developer mode » dans les réglages de ChatGPT.
 
 ### Cursor
 
-Dans `~/.cursor/mcp.json` (tous vos projets) ou `.cursor/mcp.json` (un seul projet) :
+Dans `~/.cursor/mcp.json` (tous vos projets) ou `.cursor/mcp.json` (un seul projet, [exemple](examples/cursor/.cursor/mcp.json)) :
 
 ```json
 {
@@ -140,7 +151,7 @@ cursor://anysphere.cursor-deeplink/mcp/install?name=basile&config=eyJ1cmwiOiJodH
 
 ### VS Code (GitHub Copilot)
 
-Dans `.vscode/mcp.json` (espace de travail) ou dans le `mcp.json` de votre profil (commande **MCP: Open User Configuration**) :
+Dans `.vscode/mcp.json` (espace de travail, [exemple](examples/vscode/.vscode/mcp.json)) ou dans le `mcp.json` de votre profil (commande **MCP: Open User Configuration**) :
 
 ```json
 {
@@ -161,23 +172,32 @@ code --add-mcp '{"name":"basile","type":"http","url":"https://mcp.basile.cc/mcp"
 
 Au démarrage du serveur, VS Code vous propose de vous connecter. Utilisez ensuite Basile depuis Copilot Chat en mode agent.
 
-### Windsurf (Devin Desktop)
+### Devin Desktop (anciennement Windsurf)
 
-Ouvrez le fichier de configuration MCP depuis le panneau Cascade (menu **…**, puis **Open MCP config file**). Il se trouve dans `~/.config/devin/mcp_config.json` sur macOS et Linux, et dans `%APPDATA%\devin\mcp_config.json` sous Windows ; les anciennes versions de Windsurf utilisent `~/.codeium/windsurf/mcp_config.json`.
+Devin Desktop lit ses serveurs MCP dans `~/.config/devin/mcp_config.json` sur macOS et Linux (ou `$XDG_CONFIG_HOME/devin/mcp_config.json`), et dans `%APPDATA%\devin\mcp_config.json` sous Windows. Le même fichier sert à l'agent Devin Local et à l'agent Cascade ; depuis Cascade, il s'ouvre par le menu **…** du panneau, puis **Open MCP config file** ([exemple](examples/devin-desktop/mcp_config.json)).
 
 ```json
 {
   "mcpServers": {
     "basile": {
-      "serverUrl": "https://mcp.basile.cc/mcp"
+      "url": "https://mcp.basile.cc/mcp"
     }
   }
 }
 ```
 
+Ou en ligne de commande, avec la CLI de Devin :
+
+```bash
+devin mcp add -s user basile https://mcp.basile.cc/mcp
+devin mcp login basile
+```
+
+La connexion se fait par OAuth au premier usage. Les anciennes versions de Windsurf lisent `~/.codeium/windsurf/mcp_config.json` : si l'entrée n'y est pas reconnue, remplacez `url` par `serverUrl`.
+
 ### Clients qui ne lancent que des serveurs locaux (mcp-remote)
 
-Si votre client ne sait lancer que des serveurs locaux (stdio), passez par `mcp-remote`, un pont open source qui n'est pas édité par Basile. Il demande Node.js 18 ou plus récent.
+Si votre client ne sait lancer que des serveurs locaux (stdio), passez par `mcp-remote`, un pont open source qui n'est pas édité par Basile. Il demande Node.js 18 ou plus récent ([exemple](examples/mcp-remote/claude_desktop_config.json)).
 
 ```json
 {
@@ -198,28 +218,57 @@ Tout client qui gère les serveurs MCP distants (Streamable HTTP et OAuth) fonct
 
 ## Outils du serveur MCP
 
-Le serveur expose onze outils. Chacun annonce son coût dans sa description, pour que l'IA puisse vous prévenir avant de consommer.
+<!-- outils:debut (généré par scripts/generate-tools-md.mjs) -->
+Le serveur expose **11 outils** en **4 familles**. Chacun annonce son coût dans sa description, pour que l'IA puisse vous prévenir avant de consommer. Le détail de chaque outil, paramètres et annotations compris, est dans [docs/TOOLS.md](docs/TOOLS.md).
+
+**Recherche et comptage** : compter gratuitement, chercher des personnes et des entreprises, trouver les valeurs valides des filtres. ([détail](docs/TOOLS.md#recherche-et-comptage))
 
 | Outil | Ce qu'il fait | Paramètres principaux | Coût |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `basile_count` | Compte les résultats d'une recherche de personnes ou d'entreprises. Total exact, et pour les entreprises le nombre de points de vente Google. | `kind`, `filters` | Gratuit |
 | `basile_search_people` | Cherche des personnes : dirigeants du registre légal et profils LinkedIn. 25 fiches par défaut, 1 000 au plus par appel, avec pagination. | `filters`, `limit`, `paginationToken` | 1 crédit par fiche renvoyée |
 | `basile_search_companies` | Cherche des entreprises : registre légal, pages LinkedIn et fiches Google Maps. | `filters`, `limit`, `paginationToken` | 1 crédit par fiche renvoyée |
 | `basile_activity_suggest` | Trouve l'identifiant d'une activité à partir d'un mot (« boulangerie », « avocat »), en réunissant codes NAF, catégories Google et secteurs LinkedIn. | `q`, `limit` | Gratuit |
 | `basile_suggest` | Propose les valeurs valides d'un filtre : villes, intitulés de poste, employeurs, écoles, formes juridiques, SIREN… | `field`, `q`, `limit` | Gratuit |
+
+**Fiches** : la fiche complète d'une personne ou d'une entreprise, toutes sources réunies. ([détail](docs/TOOLS.md#fiches))
+
+| Outil | Ce qu'il fait | Paramètres principaux | Coût |
+| --- | --- | --- | --- |
 | `basile_get_entity` | Fiche complète d'une personne ou d'une entreprise : toutes les sources, registre, procédures, conventions collectives, TVA intracommunautaire, comptes publiés. | `kind`, `id`, `full` | 1 crédit par appel |
-| `basile_export` | Export CSV complet (70 colonnes pour les entreprises, 92 pour les personnes), par filtres ou par liste d'identifiants. Jusqu'à 500 lignes dans la conversation, au-delà un fichier à télécharger. Mode `locations` : une ligne par point de vente Google. | `kind`, `filters` ou `ids`, `mode` | Quota d'export de l'offre |
+
+**Export** : export CSV complet, dans la conversation jusqu'à 500 lignes, en fichier à télécharger au-delà. ([détail](docs/TOOLS.md#export))
+
+| Outil | Ce qu'il fait | Paramètres principaux | Coût |
+| --- | --- | --- | --- |
+| `basile_export` | Export CSV complet (70 colonnes pour les entreprises, 92 pour les personnes), par filtres ou par liste d'identifiants. Jusqu'à 500 lignes dans la conversation, au-delà un fichier à télécharger. Mode `locations` : une ligne par point de vente Google. | `kind`, `filters`, `ids`, `mode` | Quota d'export de l'offre, au nombre de lignes |
 | `basile_export_status` | Suit un export fichier et rend son lien de téléchargement, valable environ une heure. | `jobId` | Gratuit |
-| `basile_enrich_person` | Trouve l'e-mail professionnel et/ou le numéro de portable d'une personne, présente dans Basile ou non, à partir de son nom et de sa société. Le profil LinkedIn est nécessaire pour le numéro. | `full_name`, `company_name` ou `domain`, `linkedin_url`, `find` | 0,05 € HT l'e-mail trouvé, 0,50 € HT le numéro trouvé, rien si introuvable |
+
+**Enrichissement** : l'e-mail professionnel ou le numéro de portable d'une personne, payé sur le solde d'enrichissement. ([détail](docs/TOOLS.md#enrichissement))
+
+| Outil | Ce qu'il fait | Paramètres principaux | Coût |
+| --- | --- | --- | --- |
+| `basile_enrich_person` | Trouve l'e-mail professionnel et/ou le numéro de portable d'une personne, présente dans Basile ou non, à partir de son nom et de sa société. Le profil LinkedIn est nécessaire pour le numéro. | `full_name`, `company_name`, `domain`, `linkedin_url`, `find` | 0,05 € HT l'e-mail trouvé, 0,50 € HT le numéro trouvé, rien si introuvable |
 | `basile_enrichment_status` | Rend le résultat d'une demande d'enrichissement encore en cours, sans rien relancer ni refacturer. | `id` | Gratuit |
 | `basile_enrichment_balance` | Solde d'enrichissement, prix et lien de recharge. | aucun | Gratuit |
+
+<!-- outils:fin -->
 
 Bon à savoir :
 
 - **Comptez avant d'extraire.** `basile_count` est gratuit et exact ; le total renvoyé par une recherche, lui, s'arrête à 100 000.
+- **L'enchaînement type** : `basile_activity_suggest` ou `basile_suggest` pour trouver les valeurs de filtre, `basile_count` pour dimensionner, une recherche pour un échantillon, puis `basile_export` pour tout le volume.
 - **Un zéro n'est jamais muet.** Quand une recherche par employeur ou par SIREN ne trouve rien d'exact, le serveur tente une récupération (nom nettoyé, SIREN du registre, page LinkedIn de la société) ou explique pourquoi, avec des pistes pour relancer.
-- **Confirmation.** `basile_export` et `basile_enrich_person` sont déclarés comme des outils qui consomment : votre client peut vous demander de confirmer avant de les lancer. Les autres outils sont en lecture seule.
-- **Enrichissement en lot.** Avant d'enrichir plusieurs personnes, l'IA est invitée à vous annoncer le coût maximal et à attendre votre accord.
+
+## Garde-fous
+
+- **Comptages gratuits.** `basile_count` ne consomme aucun crédit et rend un total exact. Le serveur invite l'IA à compter avant toute recherche ou tout export.
+- **Coûts annoncés.** Chaque outil écrit son coût dans sa description : 1 crédit par fiche renvoyée, 1 crédit par fiche complète, quota d'export de l'offre, prix de l'enrichissement. Avant d'enrichir plusieurs personnes, l'IA est invitée à vous annoncer le coût maximal et à attendre votre accord.
+- **Confirmation avant de consommer.** Les outils de recherche, de fiche et de suivi sont déclarés en lecture seule (`readOnlyHint: true`). `basile_export` et `basile_enrich_person` sont déclarés comme des outils qui consomment (`readOnlyHint: false`) : votre client peut vous demander de confirmer avant de les lancer.
+- **Plafonds.** 1 000 fiches au plus par appel de recherche, 500 lignes au plus dans la conversation, un export fichier plafonné par votre offre, et un plafond de requêtes par jour (voir [Offres et limites](#offres-et-limites)). Le serveur agit avec votre compte : il ne peut pas dépasser votre offre.
+- **Rien n'est débité pour rien.** Un enrichissement qui ne trouve rien ne coûte rien, une coordonnée déjà trouvée par votre compte est resservie gratuitement, et une demande rejouée avec le même `request_id` n'est ni relancée ni refacturée. Suivre un export ou un enrichissement en cours est gratuit.
+- **Pas d'écriture chez vous.** Le serveur lit la base Basile et ne touche à rien d'autre : il ne modifie ni ne supprime rien dans vos fichiers, vos outils ou votre CRM, et aucun outil n'est destructif (`destructiveHint: false`). Les exports restent dans votre compte Basile, onglet Exports.
+- **Aucune clé à stocker.** La connexion passe par OAuth : il n'y a ni jeton ni clé dans vos fichiers de configuration.
 
 ## Offres et limites
 
@@ -260,17 +309,28 @@ C'est normal avant la connexion : cette réponse déclenche le parcours OAuth. L
 
 Oui. Au-delà de 500 lignes, l'export devient un fichier à télécharger, dans la limite de votre offre (20 000 lignes par export en offre API, 50 000 en offre Agence).
 
+### L'IA peut-elle dépenser mes crédits sans me prévenir ?
+
+Chaque outil annonce son coût, le comptage est gratuit, et les deux outils qui consomment au-delà d'une recherche (`basile_export` et `basile_enrich_person`) sont signalés comme tels à votre client, qui peut vous demander de confirmer. Voir les [garde-fous](#garde-fous).
+
 ### Basile couvre-t-il d'autres pays que la France ?
 
 Basile est construit pour le marché français : registre légal français, établissements Google Maps en France, et ses filtres portent sur la France.
 
 ### Le code du serveur est-il public ?
 
-Non. Ce dépôt contient la documentation, le fichier `server.json` du registre MCP et des exemples de configuration. Le serveur est hébergé et maintenu par Basile.
+Non. Le serveur est hébergé et maintenu par Basile. Ce dépôt contient tout ce qu'il faut pour l'utiliser : la documentation, le fichier [`server.json`](server.json) du registre officiel MCP, la liste des outils ([`tools.json`](tools.json) et [docs/TOOLS.md](docs/TOOLS.md)) et des exemples de configuration.
 
 ### Il me manque un filtre : que faire ?
 
 Dites-le-nous : contact@basile.cc, ou une [demande sur ce dépôt](../../issues/new/choose). Basile évolue chaque semaine et vos demandes guident les prochains filtres.
+
+## Support
+
+- **Votre compte, votre offre ou une connexion** : écrivez à contact@basile.cc.
+- **Une erreur dans cette documentation ou dans un exemple de configuration** : [ouvrez une issue](../../issues/new/choose).
+- **Un filtre ou une donnée qui manque** : [faites une demande](../../issues/new/choose).
+- **Une faille de sécurité** : suivez [SECURITY.md](SECURITY.md), sans ouvrir d'issue publique.
 
 ## Licence
 
@@ -284,13 +344,17 @@ Contact : contact@basile.cc · Sécurité : [SECURITY.md](SECURITY.md) · Nouvea
 
 **Basile MCP is the French B2B database MCP server**: a hosted, remote MCP server that connects Claude, ChatGPT, Cursor, VS Code and any MCP client to [Basile](https://www.basile.cc), so you can find French companies, their executives and their contacts with a plain-language request. Ask for a list, the AI queries Basile, counts, filters and hands you the file.
 
+> [!NOTE]
+> **Live service.** The server is hosted by Basile and answers at `https://mcp.basile.cc/mcp`: nothing to install or update. To check that it is running, open [mcp.basile.cc/health](https://mcp.basile.cc/health), which returns `"ok": true`. Before you sign in, a `401` is expected: it starts the OAuth flow.
+
 | | |
 |---|---|
 | Server URL | `https://mcp.basile.cc/mcp` |
 | Transport | Streamable HTTP (remote, nothing to install) |
 | Sign-in | OAuth with your Basile account, no API key |
 | Billing | same as an API key: 1 credit per record returned, counts are free |
-| Official MCP Registry | `cc.basile/basile` |
+| Tools | search and count, records, export, enrichment ([full list](docs/TOOLS.md#english)) |
+| Official MCP Registry | `cc.basile/basile` ([`server.json`](server.json)) |
 | Website | [www.basile.cc](https://www.basile.cc) |
 
 ### What is in Basile
@@ -314,7 +378,15 @@ When a contact detail is missing, enrichment finds a person's work email or mobi
 - "Which construction companies in the Rhône department are currently in receivership?"
 - "Find the work email of [first name last name], marketing director at [company]."
 
-### Setup
+### Authentication and billing
+
+- **Sign-in**: OAuth with your Basile account. On first use your client opens the Basile sign-in page and registers itself (dynamic client registration, PKCE): there is no key to copy or store.
+- **Your account**: the server acts on your behalf, with your plan, credits and limits. It requires a plan with API access (API or Agency).
+- **Billing**: same as an API key. Each record returned by a search uses 1 credit, and each full record uses 1 credit per call. **Counts are free** and exact.
+- **Enrichment**: paid from the enrichment balance, €0.05 per email found and €0.50 per number found (excl. VAT), nothing if nothing is found.
+- **For client developers**: a request without a token gets a `401` whose `WWW-Authenticate` header points to the protected resource metadata (RFC 9728), `https://mcp.basile.cc/.well-known/oauth-protected-resource`. Clients register through dynamic client registration (RFC 7591) as public clients with PKCE (S256). Scope: `basile:read`.
+
+### Quick start
 
 The server is hosted: add its URL to your client, then sign in with your Basile account. Ready-to-copy files are in [examples/](examples/).
 
@@ -325,26 +397,41 @@ The server is hosted: add its URL to your client, then sign in with your Basile 
 | ChatGPT | **Settings**, **Apps**, **Advanced settings**, enable **Developer mode**, then **Create app** with OAuth |
 | Cursor | `~/.cursor/mcp.json`: `{"mcpServers": {"basile": {"url": "https://mcp.basile.cc/mcp"}}}` |
 | VS Code | `.vscode/mcp.json`: `{"servers": {"basile": {"type": "http", "url": "https://mcp.basile.cc/mcp"}}}` |
-| Windsurf (Devin Desktop) | `mcp_config.json`: `{"mcpServers": {"basile": {"serverUrl": "https://mcp.basile.cc/mcp"}}}` |
+| Devin Desktop (formerly Windsurf) | `~/.config/devin/mcp_config.json` (`%APPDATA%\devin\mcp_config.json` on Windows): `{"mcpServers": {"basile": {"url": "https://mcp.basile.cc/mcp"}}}`, or `devin mcp add -s user basile https://mcp.basile.cc/mcp` |
 | stdio-only clients | `npx -y mcp-remote https://mcp.basile.cc/mcp` (Node.js 18+) |
 
-Menu labels may vary with your client version.
+Menu labels may vary with your client version. Older Windsurf versions read `~/.codeium/windsurf/mcp_config.json` and may expect `serverUrl` instead of `url`.
 
 ### Tools
 
-| Tool | What it does | Cost |
-|---|---|---|
-| `basile_count` | Exact number of results for a people or company search | Free |
-| `basile_search_people` | Search people: registered officers and LinkedIn profiles | 1 credit per record |
-| `basile_search_companies` | Search companies: register, LinkedIn pages, Google Maps listings | 1 credit per record |
-| `basile_activity_suggest` | Activity IDs from a keyword (NAF codes, Google categories, LinkedIn industries) | Free |
-| `basile_suggest` | Valid filter values: cities, job titles, employers, schools, legal forms, SIREN… | Free |
-| `basile_get_entity` | Full record of a person or a company | 1 credit per call |
-| `basile_export` | Full CSV export; up to 500 rows inline, a downloadable file beyond | Plan export quota |
-| `basile_export_status` | Tracks a file export and returns its download link (valid about one hour) | Free |
-| `basile_enrich_person` | Finds a person's work email and/or mobile number from name and company | €0.05 per email found, €0.50 per number found (excl. VAT), nothing if not found |
-| `basile_enrichment_status` | Result of a pending enrichment request | Free |
-| `basile_enrichment_balance` | Enrichment balance, prices and top-up link | Free |
+<!-- tools:start (generated by scripts/generate-tools-md.mjs) -->
+The server exposes **11 tools** in **4 families**. Each one states its cost in its description, so the AI can warn you before using credits. See [docs/TOOLS.md](docs/TOOLS.md#english) for parameters and annotations.
+
+| Family | Tool | What it does | Cost |
+| --- | --- | --- | --- |
+| Search and count | `basile_count` | Exact number of results for a people or company search, plus the number of Google points of sale for companies. | Free |
+| Search and count | `basile_search_people` | Search people: registered officers and LinkedIn profiles. | 1 credit per record returned |
+| Search and count | `basile_search_companies` | Search companies: register, LinkedIn pages, Google Maps listings. | 1 credit per record returned |
+| Search and count | `basile_activity_suggest` | Activity IDs from a keyword (NAF codes, Google categories, LinkedIn industries). | Free |
+| Search and count | `basile_suggest` | Valid filter values: cities, job titles, employers, schools, legal forms, SIREN… | Free |
+| Records | `basile_get_entity` | Full record of a person or a company. | 1 credit per call |
+| Export | `basile_export` | Full CSV export; up to 500 rows inline, a downloadable file beyond. | Plan export quota, per row |
+| Export | `basile_export_status` | Tracks a file export and returns its download link (valid about one hour). | Free |
+| Enrichment | `basile_enrich_person` | Finds a person's work email and/or mobile number from name and company. | €0.05 per email found, €0.50 per number found (excl. VAT), nothing if not found |
+| Enrichment | `basile_enrichment_status` | Result of a pending enrichment request. | Free |
+| Enrichment | `basile_enrichment_balance` | Enrichment balance, prices and top-up link. | Free |
+
+<!-- tools:end -->
+
+### Guardrails
+
+- **Free counts.** `basile_count` uses no credits and returns an exact total; the server tells the AI to count before searching or exporting.
+- **Costs stated up front.** Every tool states its cost in its description. Before enriching several people, the AI is asked to announce the maximum cost and wait for your approval.
+- **Confirmation before spending.** Search, record and status tools are declared read-only (`readOnlyHint: true`). `basile_export` and `basile_enrich_person` are declared as tools that consume (`readOnlyHint: false`), so your client may ask you to confirm.
+- **Limits.** At most 1,000 records per search call, 500 rows inline, file exports capped by your plan, and a daily request limit. The server acts with your account and cannot exceed your plan.
+- **Nothing charged for nothing.** An enrichment that finds nothing costs nothing, a contact detail your account already found is served again for free, and a request replayed with the same `request_id` is neither rerun nor charged again.
+- **No writes on your side.** The server reads the Basile database and touches nothing else: it never changes or deletes anything in your files, tools or CRM, and no tool is destructive (`destructiveHint: false`).
+- **No key to store.** Sign-in uses OAuth, so no token or key ends up in your configuration files.
 
 ### Plans and limits
 
@@ -356,7 +443,13 @@ The MCP server requires a plan with API access: **API** (€79 excl. VAT per mon
 - **Are counts free?** Yes. `basile_count` uses no credits and returns an exact total; it only counts as one request toward your daily limit.
 - **My client shows "401 Unauthorized".** Expected before sign-in: it starts the OAuth flow. Check the service at `https://mcp.basile.cc/health`.
 - **Can I export more than 500 rows?** Yes. Beyond 500 rows the export becomes a downloadable file, up to your plan's limit.
-- **Is the server source code public?** No. This repository holds documentation, the MCP Registry `server.json` and client configuration examples.
+- **Is the server source code public?** No. The server is hosted by Basile. This repository holds the documentation, the MCP Registry `server.json`, the tool list (`tools.json`, `docs/TOOLS.md`) and client configuration examples.
+
+### Getting help
+
+- Questions about your account, your plan or a connection: contact@basile.cc.
+- A mistake in this documentation or in a configuration example: [open an issue](../../issues/new/choose).
+- A security vulnerability: follow [SECURITY.md](SECURITY.md) and do not open a public issue.
 
 ### License
 

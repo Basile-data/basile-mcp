@@ -1,0 +1,433 @@
+{
+  "$comment": "Liste publique des outils du serveur MCP de Basile, tirée de leurs définitions (titres et annotations tels que déclarés par le serveur). docs/TOOLS.md et le résumé des outils du README sont générés à partir de ce fichier : node scripts/generate-tools-md.mjs",
+  "server": {
+    "name": "cc.basile/basile",
+    "title": "Basile",
+    "version": "0.2.0",
+    "url": "https://mcp.basile.cc/mcp",
+    "websiteUrl": "https://www.basile.cc"
+  },
+  "families": [
+    {
+      "id": "recherche",
+      "title": "Recherche et comptage",
+      "title_en": "Search and count",
+      "summary": "Compter gratuitement, chercher des personnes et des entreprises, trouver les valeurs valides des filtres.",
+      "summary_en": "Count for free, search people and companies, find valid filter values."
+    },
+    {
+      "id": "fiches",
+      "title": "Fiches",
+      "title_en": "Records",
+      "summary": "La fiche complète d'une personne ou d'une entreprise, toutes sources réunies.",
+      "summary_en": "The full record of a person or a company, all sources combined."
+    },
+    {
+      "id": "export",
+      "title": "Export",
+      "title_en": "Export",
+      "summary": "Export CSV complet, dans la conversation jusqu'à 500 lignes, en fichier à télécharger au-delà.",
+      "summary_en": "Full CSV export, inline up to 500 rows, as a downloadable file beyond."
+    },
+    {
+      "id": "enrichissement",
+      "title": "Enrichissement",
+      "title_en": "Enrichment",
+      "summary": "L'e-mail professionnel ou le numéro de portable d'une personne, payé sur le solde d'enrichissement.",
+      "summary_en": "A person's work email or mobile number, paid from the enrichment balance."
+    }
+  ],
+  "tools": [
+    {
+      "name": "basile_count",
+      "title": "Compter sans extraire",
+      "family": "recherche",
+      "summary": "Compte les résultats d'une recherche de personnes ou d'entreprises. Total exact, et pour les entreprises le nombre de points de vente Google.",
+      "summary_en": "Exact number of results for a people or company search, plus the number of Google points of sale for companies.",
+      "description": "Rend le nombre total de résultats pour des filtres, sans rien extraire. Le total est exact, jamais plafonné, et le comptage ne consomme aucun crédit. Pour les entreprises, rend aussi le nombre de points de vente (fiches Google Maps) derrière les sociétés. À utiliser avant toute recherche ou tout export, pour dimensionner la demande.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "kind",
+          "type": "\"people\" | \"companies\"",
+          "required": true,
+          "description": "`people` pour les personnes, `companies` pour les entreprises."
+        },
+        {
+          "name": "filters",
+          "type": "object",
+          "required": true,
+          "description": "Les filtres de la recherche, les mêmes que pour `basile_search_people` et `basile_search_companies`."
+        }
+      ]
+    },
+    {
+      "name": "basile_search_people",
+      "title": "Chercher des personnes",
+      "family": "recherche",
+      "summary": "Cherche des personnes : dirigeants du registre légal et profils LinkedIn. 25 fiches par défaut, 1 000 au plus par appel, avec pagination.",
+      "summary_en": "Search people: registered officers and LinkedIn profiles.",
+      "description": "Cherche des personnes dans Basile : dirigeants du registre légal et profils LinkedIn, avec des filtres sur le secteur, le poste, le mandat, la séniorité, la fonction, les compétences, la formation, l'ancienneté, la taille de l'employeur et la géographie. Rend les fiches de la page et un curseur pour la suivante. Le total renvoyé s'arrête à 100 000 : pour un total exact, utiliser `basile_count`. Quand une recherche par employeur ou par SIREN ne trouve rien d'exact, le serveur tente une récupération ou explique pourquoi.",
+      "billing": "credits",
+      "cost": "1 crédit par fiche renvoyée",
+      "cost_en": "1 credit per record returned",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "filters",
+          "type": "object",
+          "required": true,
+          "description": "Filtres sur les personnes. Un filtre texte s'écrit `{\"include\": [...], \"exclude\": [...]}` ; deux filtres différents se combinent en ET."
+        },
+        {
+          "name": "limit",
+          "type": "integer, 1 à 1 000",
+          "required": false,
+          "description": "Nombre de fiches à renvoyer, 25 par défaut."
+        },
+        {
+          "name": "paginationToken",
+          "type": "string",
+          "required": false,
+          "description": "Curseur de la page suivante, rendu par l'appel précédent. La pagination demande un abonnement actif."
+        }
+      ]
+    },
+    {
+      "name": "basile_search_companies",
+      "title": "Chercher des entreprises",
+      "family": "recherche",
+      "summary": "Cherche des entreprises : registre légal, pages LinkedIn et fiches Google Maps.",
+      "summary_en": "Search companies: register, LinkedIn pages, Google Maps listings.",
+      "description": "Cherche des entreprises dans Basile, en croisant le registre légal, les pages LinkedIn et les fiches Google Maps, avec des filtres sur l'activité, le code NAF, la géographie, l'effectif, le capital, la forme juridique, la date de création, les procédures collectives, la convention collective, les technologies du site et les avis Google. Rend le nombre de sociétés et celui de leurs points de vente. 25 fiches par défaut, 1 000 au plus par appel, avec pagination. Le total renvoyé s'arrête à 100 000 : pour un total exact, utiliser `basile_count`.",
+      "billing": "credits",
+      "cost": "1 crédit par fiche renvoyée",
+      "cost_en": "1 credit per record returned",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "filters",
+          "type": "object",
+          "required": true,
+          "description": "Filtres sur les entreprises, même forme que pour les personnes."
+        },
+        {
+          "name": "limit",
+          "type": "integer, 1 à 1 000",
+          "required": false,
+          "description": "Nombre de fiches à renvoyer, 25 par défaut."
+        },
+        {
+          "name": "paginationToken",
+          "type": "string",
+          "required": false,
+          "description": "Curseur de la page suivante, rendu par l'appel précédent."
+        }
+      ]
+    },
+    {
+      "name": "basile_activity_suggest",
+      "title": "Suggérer une activité (IDs concept)",
+      "family": "recherche",
+      "summary": "Trouve l'identifiant d'une activité à partir d'un mot (« boulangerie », « avocat »), en réunissant codes NAF, catégories Google et secteurs LinkedIn.",
+      "summary_en": "Activity IDs from a keyword (NAF codes, Google categories, LinkedIn industries).",
+      "description": "Trouve les identifiants d'activité qui correspondent à un mot (« restaurant », « plomberie »). Chaque identifiant réunit les codes NAF, les catégories Google et les secteurs LinkedIn d'un même métier. Sert à remplir le filtre `activity`, pour les personnes comme pour les entreprises.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "q",
+          "type": "string",
+          "required": true,
+          "description": "Le métier ou l'activité cherchée, par exemple « boulangerie » ou « avocat »."
+        },
+        {
+          "name": "limit",
+          "type": "integer, 1 à 50",
+          "required": false,
+          "description": "Nombre de suggestions."
+        }
+      ]
+    },
+    {
+      "name": "basile_suggest",
+      "title": "Autocomplete (villes, rôles, employeurs, noms…)",
+      "family": "recherche",
+      "summary": "Propose les valeurs valides d'un filtre : villes, intitulés de poste, employeurs, écoles, formes juridiques, SIREN…",
+      "summary_en": "Valid filter values: cities, job titles, employers, schools, legal forms, SIREN…",
+      "description": "Propose les valeurs valides d'un filtre avant de chercher. Personnes : villes, employeurs, intitulés de poste, compétences, langues, formations, noms, nationalités, séniorités, tranches d'ancienneté, bornes d'âge et de nombre de mandats. Entreprises : nom, ville, forme juridique, SIREN. Pour une activité ou un métier, `basile_activity_suggest` est plus adapté.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "field",
+          "type": "string (16 valeurs)",
+          "required": true,
+          "description": "Le champ à compléter : `people_cities`, `people_companies`, `people_roles`, `people_skills`, `people_languages`, `people_education`, `people_names`, `people_nationalities`, `people_seniorities`, `people_tenure_buckets`, `people_age_bounds`, `people_mandate_count_bounds`, `company_name`, `company_city`, `company_legal_form` ou `company_siren`."
+        },
+        {
+          "name": "q",
+          "type": "string",
+          "required": false,
+          "description": "Le début de la valeur cherchée. Inutile pour les séniorités, les tranches d'ancienneté et les bornes."
+        },
+        {
+          "name": "limit",
+          "type": "integer, 1 à 50",
+          "required": false,
+          "description": "Nombre de suggestions, 50 au plus."
+        }
+      ]
+    },
+    {
+      "name": "basile_get_entity",
+      "title": "Fiche détaillée d'une personne / entreprise",
+      "family": "fiches",
+      "summary": "Fiche complète d'une personne ou d'une entreprise : toutes les sources, registre, procédures, conventions collectives, TVA intracommunautaire, comptes publiés.",
+      "summary_en": "Full record of a person or a company.",
+      "description": "Rend la fiche complète d'une personne ou d'une entreprise à partir de son identifiant, renvoyé par une recherche. Personne : les colonnes de l'export CSV. Entreprise : une fiche par source (registre, LinkedIn, Google Maps) et, pour le registre, la situation de procédure collective d'après les jugements publiés au BODACC, l'historique des jugements, les conventions collectives (IDCC) et le numéro de TVA intracommunautaire. Chaque appel est facturé, même pour une fiche déjà renvoyée par une recherche : pour plusieurs fiches, `basile_export` coûte autant et rend tout d'un coup.",
+      "billing": "credits",
+      "cost": "1 crédit par appel",
+      "cost_en": "1 credit per call",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "kind",
+          "type": "\"people\" | \"companies\"",
+          "required": true,
+          "description": "`people` pour une personne, `companies` pour une entreprise."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "L'identifiant de la fiche, renvoyé par `basile_search_people` ou `basile_search_companies`."
+        },
+        {
+          "name": "full",
+          "type": "boolean",
+          "required": false,
+          "description": "Fiche complète, `true` par défaut."
+        }
+      ]
+    },
+    {
+      "name": "basile_export",
+      "title": "Exporter en CSV (consomme du quota)",
+      "family": "export",
+      "summary": "Export CSV complet (70 colonnes pour les entreprises, 92 pour les personnes), par filtres ou par liste d'identifiants. Jusqu'à 500 lignes dans la conversation, au-delà un fichier à télécharger. Mode `locations` : une ligne par point de vente Google.",
+      "summary_en": "Full CSV export; up to 500 rows inline, a downloadable file beyond.",
+      "description": "Exporte un CSV complet (70 colonnes pour les entreprises, 92 pour les personnes), par filtres ou par liste d'identifiants, avec les colonnes de procédure collective et de convention collective. Le serveur compte d'abord, gratuitement : jusqu'à 500 lignes, le CSV arrive dans la conversation ; au-delà, Basile construit un fichier et rend un `jobId` à suivre avec `basile_export_status`. Le fichier est plafonné par l'offre (20 000 lignes en offre API, 50 000 en offre Agence). Pour les entreprises, le mode `locations` rend une ligne par point de vente Google au lieu d'une ligne par entreprise.",
+      "billing": "quota_export",
+      "cost": "Quota d'export de l'offre, au nombre de lignes",
+      "cost_en": "Plan export quota, per row",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "kind",
+          "type": "\"people\" | \"companies\"",
+          "required": true,
+          "description": "`people` pour les personnes, `companies` pour les entreprises."
+        },
+        {
+          "name": "filters",
+          "type": "object",
+          "required": false,
+          "description": "Les filtres de la recherche à exporter. Donner `filters` ou `ids`."
+        },
+        {
+          "name": "ids",
+          "type": "string[]",
+          "required": false,
+          "description": "Une liste d'identifiants précis à exporter, à la place des filtres."
+        },
+        {
+          "name": "mode",
+          "type": "\"companies\" | \"locations\"",
+          "required": false,
+          "description": "Entreprises seulement : `companies` (une ligne par entreprise, par défaut) ou `locations` (une ligne par point de vente Google)."
+        }
+      ]
+    },
+    {
+      "name": "basile_export_status",
+      "title": "Suivre un export fichier et récupérer son lien",
+      "family": "export",
+      "summary": "Suit un export fichier et rend son lien de téléchargement, valable environ une heure.",
+      "summary_en": "Tracks a file export and returns its download link (valid about one hour).",
+      "description": "Suit un export fichier lancé par `basile_export` et rend, dès qu'il est prêt, un lien de téléchargement direct valable environ une heure. Attend jusqu'à 40 secondes environ : si le fichier n'est pas fini, il suffit de rappeler l'outil avec le même `jobId`, la construction continue. Ne consomme rien : le quota est débité au lancement de l'export. Le fichier reste aussi disponible dans l'application Basile, onglet Exports.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "jobId",
+          "type": "string",
+          "required": true,
+          "description": "L'identifiant rendu par `basile_export`."
+        }
+      ]
+    },
+    {
+      "name": "basile_enrich_person",
+      "title": "Trouver l'e-mail ou le numéro d'une personne (payé sur le solde)",
+      "family": "enrichissement",
+      "summary": "Trouve l'e-mail professionnel et/ou le numéro de portable d'une personne, présente dans Basile ou non, à partir de son nom et de sa société. Le profil LinkedIn est nécessaire pour le numéro.",
+      "summary_en": "Finds a person's work email and/or mobile number from name and company.",
+      "description": "Trouve l'e-mail professionnel et/ou le numéro de portable d'une personne, qu'elle soit dans Basile ou non, à partir de son nom et de sa société. Pour l'e-mail, donner le domaine ou le nom de la société ; pour le numéro, le profil LinkedIn est nécessaire. Payé sur le solde d'enrichissement, jamais sur les crédits de recherche, et seulement si la coordonnée est trouvée. Une coordonnée déjà trouvée par votre compte est resservie gratuitement. Attend le résultat jusqu'à 25 secondes environ ; une demande encore en cours se suit avec `basile_enrichment_status`, sans être relancée ni refacturée.",
+      "billing": "solde_enrichissement",
+      "cost": "0,05 € HT l'e-mail trouvé, 0,50 € HT le numéro trouvé, rien si introuvable",
+      "cost_en": "€0.05 per email found, €0.50 per number found (excl. VAT), nothing if not found",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "full_name",
+          "type": "string",
+          "required": false,
+          "description": "Nom complet de la personne, ou bien `first_name` et `last_name`."
+        },
+        {
+          "name": "first_name",
+          "type": "string",
+          "required": false,
+          "main": false,
+          "description": "Prénom, avec `last_name`, si `full_name` n'est pas donné."
+        },
+        {
+          "name": "last_name",
+          "type": "string",
+          "required": false,
+          "main": false,
+          "description": "Nom, avec `first_name`."
+        },
+        {
+          "name": "company_name",
+          "type": "string",
+          "required": false,
+          "description": "Nom de la société."
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "required": false,
+          "description": "Domaine de la société (par exemple `acme.fr`). Une adresse de site ou un e-mail sont acceptés."
+        },
+        {
+          "name": "linkedin_url",
+          "type": "string",
+          "required": false,
+          "description": "Adresse du profil LinkedIn personnel. Obligatoire pour le numéro."
+        },
+        {
+          "name": "find",
+          "type": "\"email\" | \"phone\" | \"both\"",
+          "required": false,
+          "description": "Ce qui est cherché : `email` (par défaut), `phone` ou `both`."
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "required": false,
+          "main": false,
+          "description": "Identifiant de demande facultatif : la même demande rejouée avec le même `request_id` n'est ni relancée ni refacturée."
+        }
+      ]
+    },
+    {
+      "name": "basile_enrichment_status",
+      "title": "Suivre une demande d'enrichissement",
+      "family": "enrichissement",
+      "summary": "Rend le résultat d'une demande d'enrichissement encore en cours, sans rien relancer ni refacturer.",
+      "summary_en": "Result of a pending enrichment request.",
+      "description": "Rend le résultat d'une demande lancée par `basile_enrich_person` et encore en cours. Ne relance aucune recherche et ne débite rien de plus : le prix est débité une seule fois, quand la coordonnée est trouvée.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "L'identifiant rendu par `basile_enrich_person`."
+        }
+      ]
+    },
+    {
+      "name": "basile_enrichment_balance",
+      "title": "Solde et prix de l'enrichissement",
+      "family": "enrichissement",
+      "summary": "Solde d'enrichissement, prix et lien de recharge.",
+      "summary_en": "Enrichment balance, prices and top-up link.",
+      "description": "Rend le solde d'enrichissement du compte, les prix (e-mail trouvé, numéro trouvé, rien si introuvable) et le lien de recharge. Sert à estimer le coût avant d'enrichir plusieurs personnes.",
+      "billing": "gratuit",
+      "cost": "Gratuit",
+      "cost_en": "Free",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "parameters": []
+    }
+  ]
+}

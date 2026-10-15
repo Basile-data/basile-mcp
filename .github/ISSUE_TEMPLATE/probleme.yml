@@ -20,7 +20,7 @@ body:
         - ChatGPT
         - Cursor
         - VS Code
-        - Windsurf (Devin Desktop)
+        - Devin Desktop (anciennement Windsurf)
         - mcp-remote
         - Autre (other)
     validations:
