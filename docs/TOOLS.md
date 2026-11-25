@@ -94,11 +94,11 @@ Annotations : `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: t
 
 **Autocomplete (villes, rôles, employeurs, noms…)** · Gratuit · lecture seule
 
-Propose les valeurs valides d'un filtre avant de chercher. Personnes : villes, employeurs, intitulés de poste, compétences, langues, formations, noms, nationalités, séniorités, tranches d'ancienneté, bornes d'âge et de nombre de mandats. Entreprises : nom, ville, forme juridique, SIREN. Pour une activité ou un métier, `basile_activity_suggest` est plus adapté.
+Propose les valeurs valides d'un filtre avant de chercher. Personnes : villes, employeurs, intitulés de poste, compétences, langues, formations, noms, séniorités, tranches d'ancienneté, bornes d'âge et de nombre de mandats. Entreprises : nom, ville, forme juridique, SIREN. Pour une activité ou un métier, `basile_activity_suggest` est plus adapté.
 
 | Paramètre | Type | Requis | Description |
 | --- | --- | --- | --- |
-| `field` | `string (16 valeurs)` | oui | Le champ à compléter : `people_cities`, `people_companies`, `people_roles`, `people_skills`, `people_languages`, `people_education`, `people_names`, `people_nationalities`, `people_seniorities`, `people_tenure_buckets`, `people_age_bounds`, `people_mandate_count_bounds`, `company_name`, `company_city`, `company_legal_form` ou `company_siren`. |
+| `field` | `string (15 valeurs)` | oui | Le champ à compléter : `people_cities`, `people_companies`, `people_roles`, `people_skills`, `people_languages`, `people_education`, `people_names`, `people_seniorities`, `people_tenure_buckets`, `people_age_bounds`, `people_mandate_count_bounds`, `company_name`, `company_city`, `company_legal_form` ou `company_siren`. |
 | `q` | `string` | non | Le début de la valeur cherchée. Inutile pour les séniorités, les tranches d'ancienneté et les bornes. |
 | `limit` | `integer, 1 à 50` | non | Nombre de suggestions, 50 au plus. |
 

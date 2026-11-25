@@ -180,7 +180,7 @@
       "family": "recherche",
       "summary": "Propose les valeurs valides d'un filtre : villes, intitulés de poste, employeurs, écoles, formes juridiques, SIREN…",
       "summary_en": "Valid filter values: cities, job titles, employers, schools, legal forms, SIREN…",
-      "description": "Propose les valeurs valides d'un filtre avant de chercher. Personnes : villes, employeurs, intitulés de poste, compétences, langues, formations, noms, nationalités, séniorités, tranches d'ancienneté, bornes d'âge et de nombre de mandats. Entreprises : nom, ville, forme juridique, SIREN. Pour une activité ou un métier, `basile_activity_suggest` est plus adapté.",
+      "description": "Propose les valeurs valides d'un filtre avant de chercher. Personnes : villes, employeurs, intitulés de poste, compétences, langues, formations, noms, séniorités, tranches d'ancienneté, bornes d'âge et de nombre de mandats. Entreprises : nom, ville, forme juridique, SIREN. Pour une activité ou un métier, `basile_activity_suggest` est plus adapté.",
       "billing": "gratuit",
       "cost": "Gratuit",
       "cost_en": "Free",
@@ -193,9 +193,9 @@
       "parameters": [
         {
           "name": "field",
-          "type": "string (16 valeurs)",
+          "type": "string (15 valeurs)",
           "required": true,
-          "description": "Le champ à compléter : `people_cities`, `people_companies`, `people_roles`, `people_skills`, `people_languages`, `people_education`, `people_names`, `people_nationalities`, `people_seniorities`, `people_tenure_buckets`, `people_age_bounds`, `people_mandate_count_bounds`, `company_name`, `company_city`, `company_legal_form` ou `company_siren`."
+          "description": "Le champ à compléter : `people_cities`, `people_companies`, `people_roles`, `people_skills`, `people_languages`, `people_education`, `people_names`, `people_seniorities`, `people_tenure_buckets`, `people_age_bounds`, `people_mandate_count_bounds`, `company_name`, `company_city`, `company_legal_form` ou `company_siren`."
         },
         {
           "name": "q",
